@@ -57,14 +57,18 @@ struct YeeCommands: Commands {
         // "Enter/Exit Full Screen" (⌃⌘F) to this menu; ⌘F is still handled
         // by KeyCatcher in ContentView.
         CommandGroup(replacing: .toolbar) {
+            // Symbol shortcuts use `localization: .custom`: by default SwiftUI
+            // remaps them to the US physical key, so on AZERTY the menu showed
+            // "8" for * and "à" for 0. The keys themselves are also handled by
+            // KeyCatcher (character-based), so they work on every layout.
             Button(L("menu.fitOnScreen")) { post(.fitOnScreen) }
-                .keyboardShortcut("*", modifiers: [])
+                .keyboardShortcut("*", modifiers: [], localization: .custom)
             Button(L("menu.zoom100")) { post(.zoomReset) }
-                .keyboardShortcut("0", modifiers: [])
+                .keyboardShortcut("0", modifiers: [], localization: .custom)
             Button(L("menu.zoomIn")) { post(.zoomIn) }
-                .keyboardShortcut("=", modifiers: [])
+                .keyboardShortcut("=", modifiers: [], localization: .custom)
             Button(L("menu.zoomOut")) { post(.zoomOut) }
-                .keyboardShortcut("-", modifiers: [])
+                .keyboardShortcut("-", modifiers: [], localization: .custom)
 
             Divider()
 
