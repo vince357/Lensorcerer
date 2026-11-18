@@ -153,6 +153,7 @@ struct StaticImageView: View {
     let url: URL
     @Binding var naturalSize: CGSize?
     @State private var image: NSImage?
+    @State private var failed = false
 
     var body: some View {
         Group {
@@ -161,6 +162,16 @@ struct StaticImageView: View {
                     .resizable()
                     .interpolation(.high)
                     .antialiased(true)
+            } else if failed {
+                // Unreadable file (corrupt, or a format macOS can't decode):
+                // say so instead of spinning forever.
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 48))
+                    Text(L("image.loadFailed"))
+                        .font(.title3)
+                }
+                .foregroundColor(.gray)
             } else {
                 ProgressView().tint(.white)
             }
@@ -171,7 +182,14 @@ struct StaticImageView: View {
     private func load() {
         let requestedURL = url
         DispatchQueue.global(qos: .userInitiated).async {
-            guard let img = NSImage(contentsOf: requestedURL) else { return }
+            guard let img = NSImage(contentsOf: requestedURL) else {
+                DispatchQueue.main.async {
+                    guard requestedURL == url else { return }
+                    failed = true
+                    naturalSize = nil   // don't keep showing the previous image's size
+                }
+                return
+            }
             let size: CGSize
             if let best = img.representations.max(by: { $0.pixelsWide * $0.pixelsHigh < $1.pixelsWide * $1.pixelsHigh }) {
                 size = CGSize(width: best.pixelsWide, height: best.pixelsHigh)

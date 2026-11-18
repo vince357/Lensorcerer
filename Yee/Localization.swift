@@ -28,6 +28,7 @@ enum L10n {
             "dropzone.subtitle": "Drag a file or folder here, or use File › Open",
             "dropzone.empty.title": "No supported media found",
             "dropzone.empty.subtitle": "This folder doesn't contain any image or video Yee can open.",
+            "image.loadFailed": "Unable to display this file",
 
             "menu.open": "Open…",
             "menu.revealInFinder": "Reveal in Finder",
@@ -119,6 +120,7 @@ enum L10n {
             "dropzone.subtitle": "Glissez un fichier ou un dossier ici, ou utilisez Fichier › Ouvrir",
             "dropzone.empty.title": "Aucun média pris en charge",
             "dropzone.empty.subtitle": "Ce dossier ne contient aucune image ou vidéo que Yee peut ouvrir.",
+            "image.loadFailed": "Impossible d'afficher ce fichier",
 
             "menu.open": "Ouvrir…",
             "menu.revealInFinder": "Afficher dans le Finder",
