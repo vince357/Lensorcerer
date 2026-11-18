@@ -154,7 +154,7 @@ enum L10n {
 
             "sort.name": "Nom",
             "sort.dateModified": "Date de modification",
-            "sort.size": "Poids",
+            "sort.size": "Taille",
             "sort.fileType": "Type de fichier",
 
             "toast.trashed": "« %@ » déplacé vers la Corbeille.",
