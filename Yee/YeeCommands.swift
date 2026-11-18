@@ -149,8 +149,10 @@ struct YeeCommands: Commands {
         full.append(NSAttributedString(string: "\n"))
         let linkStart = full.length
         full.append(NSAttributedString(string: linkText))
-        linkRange = NSRange(location: linkStart, length: linkText.count)
-        full.addAttribute(.link, value: "https://github.com/vince357/eYe", range: linkRange)
+        // NSString length (UTF-16), not Swift's character count, so the range
+        // stays correct with accented or other non-ASCII characters.
+        linkRange = NSRange(location: linkStart, length: (linkText as NSString).length)
+        full.addAttribute(.link, value: "https://github.com/vince357/Yee", range: linkRange)
         full.addAttribute(.font, value: NSFont.systemFont(ofSize: 12), range: NSRange(location: 0, length: full.length))
 
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"

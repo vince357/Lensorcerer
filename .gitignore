@@ -3,3 +3,5 @@ xcuserdata/
 *.xcuserstate
 build/
 DerivedData/
+# Built app: publish it in GitHub Releases instead of committing it
+\!built_app/
