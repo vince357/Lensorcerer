@@ -234,7 +234,8 @@ struct ContentView: View {
                     }
                 }
             },
-            onDelete: { if store.currentFile != nil { showDeleteConfirm = true } }
+            onDelete: { if store.currentFile != nil { showDeleteConfirm = true } },
+            onToggleFullScreen: { handle(.toggleFullScreen) }
         )
     }
 
@@ -290,6 +291,7 @@ struct KeyActionSet {
     let onEnter: () -> Void
     let onArrow: (ArrowDirection) -> Void
     let onDelete: () -> Void
+    let onToggleFullScreen: () -> Void
 }
 
 struct KeyCatcher: NSViewRepresentable {
@@ -313,6 +315,12 @@ class KeyCatcherNSView: NSView {
         guard let a = actions else { return }
         let cmd = event.modifierFlags.contains(.command)
         let shift = event.modifierFlags.contains(.shift)
+
+        // ⌘F: full screen. Matched by character so it follows the layout.
+        // (The View menu shows macOS's own full-screen item, ⌃⌘F.)
+        if cmd, event.charactersIgnoringModifiers?.lowercased() == "f" {
+            a.onToggleFullScreen(); return
+        }
 
         if !cmd {
             // Symbol keys matched by resolved character (layout + numpad safe)

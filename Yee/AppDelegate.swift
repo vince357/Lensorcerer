@@ -35,6 +35,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         dispatch(url: URL(fileURLWithPath: first))
     }
 
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        // No window tabs (Yee works with a single viewer window): removes the
+        // system "Show Tab Bar" / "Show All Tabs" items from the View menu.
+        NSWindow.allowsAutomaticWindowTabbing = false
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         if AppSettings.shared.openFullScreenByDefault {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {

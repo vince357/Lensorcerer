@@ -48,12 +48,15 @@ struct YeeCommands: Commands {
                 .keyboardShortcut(.delete, modifiers: [])
         }
 
-        CommandMenu(L("menu.view")) {
-            Button(L("menu.fullscreen")) { post(.toggleFullScreen) }
-                .keyboardShortcut("f", modifiers: .command)
-
-            Divider()
-
+        // Our items go into the system-provided View menu ("Présentation" in
+        // French) instead of a CommandMenu of our own: a separate CommandMenu
+        // produced a second "View"/"Affichage" menu next to the system one.
+        // Replacing the .toolbar group also drops "Show/Customize Toolbar",
+        // which made no sense here (Yee has no toolbar).
+        // No full-screen item of our own: macOS already adds its standard
+        // "Enter/Exit Full Screen" (⌃⌘F) to this menu; ⌘F is still handled
+        // by KeyCatcher in ContentView.
+        CommandGroup(replacing: .toolbar) {
             Button(L("menu.fitOnScreen")) { post(.fitOnScreen) }
                 .keyboardShortcut("*", modifiers: [])
             Button(L("menu.zoom100")) { post(.zoomReset) }

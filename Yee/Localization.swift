@@ -34,8 +34,6 @@ enum L10n {
             "menu.rotate": "Rotate 90° (clockwise)",
             "menu.delete": "Move to Trash",
 
-            "menu.view": "View",
-            "menu.fullscreen": "Full Screen",
             "menu.fitOnScreen": "Fit on Screen",
             "menu.zoom100": "Zoom 100%",
             "menu.zoomIn": "Zoom In",
@@ -128,8 +126,6 @@ enum L10n {
             "menu.rotate": "Pivoter à 90° (horaire)",
             "menu.delete": "Déplacer vers la Corbeille",
 
-            "menu.view": "Affichage",
-            "menu.fullscreen": "Plein écran",
             "menu.fitOnScreen": "Ajuster à l'écran",
             "menu.zoom100": "Zoom 100%",
             "menu.zoomIn": "Zoom avant",
