@@ -10,6 +10,7 @@ struct ImageDisplayView: View {
     @Binding var imagePixelSize: CGSize?
     @Binding var panOffset: CGSize
     @Binding var gifPaused: Bool
+    @Binding var containerSize: CGSize       // reported back so ContentView knows the real fit scale
     let stepRequestToken: Int
     let nudgeToken: Int
     let nudgeDelta: CGSize
@@ -57,6 +58,8 @@ struct ImageDisplayView: View {
                 // state from the previous image while an async load is still
                 // in flight. This is what fixed the name/image mismatch bug.
                 .id(file.url)
+                .onAppear { containerSize = geo.size }
+                .onChange(of: geo.size) { newSize in containerSize = newSize }
                 .onChange(of: store.currentIndex) { _ in panOffset = .zero }
                 .onChange(of: nudgeToken) { _ in
                     let proposed = CGSize(width: panOffset.width + nudgeDelta.width,
@@ -84,14 +87,29 @@ struct ImageDisplayView: View {
     }
 
     private func computeScale(containerSize: CGSize, rotationDegrees: Int) -> CGFloat {
-        guard let nat = imagePixelSize, nat.width > 0, nat.height > 0 else {
-            return zoomScale > 0 ? zoomScale : 1.0
-        }
+        Self.effectiveScale(zoomScale: zoomScale, natural: imagePixelSize,
+                            containerSize: containerSize, rotationDegrees: rotationDegrees,
+                            settings: settings)
+    }
+
+    /// The scale actually used on screen: the manual zoom if one is set,
+    /// otherwise the fit scale (0 = auto-fit sentinel). Shared with
+    /// ContentView so the status bar and the zoom keys use the same value
+    /// as the renderer.
+    static func effectiveScale(zoomScale: CGFloat, natural: CGSize?, containerSize: CGSize,
+                               rotationDegrees: Int, settings: AppSettings) -> CGFloat {
         if zoomScale > 0 { return zoomScale }
+        guard let nat = natural, nat.width > 0, nat.height > 0,
+              containerSize.width > 0, containerSize.height > 0 else { return 1.0 }
+        let effectiveNatural = rotatedSize(nat, rotationDegrees: rotationDegrees)
+        return fitScale(containerSize: containerSize, natural: effectiveNatural, settings: settings)
+    }
+
+    /// Natural size with width/height swapped for 90°/270° rotations.
+    static func rotatedSize(_ size: CGSize, rotationDegrees: Int) -> CGSize {
         let normalized = ((rotationDegrees % 360) + 360) % 360
         let swapped = normalized == 90 || normalized == 270
-        let effectiveNatural = swapped ? CGSize(width: nat.height, height: nat.width) : nat
-        return Self.fitScale(containerSize: containerSize, natural: effectiveNatural, settings: settings)
+        return swapped ? CGSize(width: size.height, height: size.width) : size
     }
 
     static func fitScale(containerSize: CGSize, natural: CGSize, settings: AppSettings) -> CGFloat {

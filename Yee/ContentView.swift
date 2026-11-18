@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var toastMessage: String? = nil
     @State private var showDeleteConfirm = false
     @State private var hasOpenedAnything = false
+    @State private var containerSize: CGSize = .zero
 
     var body: some View {
         ZStack {
@@ -32,6 +33,7 @@ struct ContentView: View {
                                   imagePixelSize: $imagePixelSize,
                                   panOffset: $panOffset,
                                   gifPaused: $gifPaused,
+                                  containerSize: $containerSize,
                                   stepRequestToken: gifStepToken,
                                   nudgeToken: nudgeToken,
                                   nudgeDelta: nudgeDelta)
@@ -41,7 +43,7 @@ struct ContentView: View {
                 Spacer()
                 StatusBarView(store: store,
                               imagePixelSize: imagePixelSize,
-                              displayedZoomPercent: Int(round(zoomScale > 0 ? zoomScale * 100 : 100)))
+                              displayedZoomPercent: Int(round(currentZoomValue() * 100)))
             }
 
             if let msg = toastMessage {
@@ -172,7 +174,15 @@ struct ContentView: View {
         }
     }
 
-    private func currentZoomValue() -> CGFloat { zoomScale > 0 ? zoomScale : 1.0 }
+    /// Scale currently shown on screen — the manual zoom, or the real fit
+    /// scale when in auto-fit mode — so zooming from a fitted image starts
+    /// from what the user actually sees instead of jumping from 100%.
+    private func currentZoomValue() -> CGFloat {
+        ImageDisplayView.effectiveScale(zoomScale: zoomScale, natural: imagePixelSize,
+                                        containerSize: containerSize,
+                                        rotationDegrees: store.pendingRotation,
+                                        settings: settings)
+    }
     private func setZoom(_ value: CGFloat) { zoomScale = max(0.05, min(20, value)) }
 
     private func presentOpenPanel() {
@@ -228,7 +238,16 @@ struct ContentView: View {
         )
     }
 
-    private func isZoomedBeyond() -> Bool { zoomScale > 1.0 }
+    /// Arrows pan only when a manual zoom makes the image overflow the
+    /// window; otherwise they navigate. (Previously `zoomScale > 1.0`, which
+    /// no longer works now that zooming starts from the fit scale: an image
+    /// zoomed from 37% to 62% can overflow the window while staying < 100%.)
+    private func isZoomedBeyond() -> Bool {
+        guard zoomScale > 0, let nat = imagePixelSize else { return false }
+        let n = ImageDisplayView.rotatedSize(nat, rotationDegrees: store.pendingRotation)
+        return n.width * zoomScale > containerSize.width + 0.5
+            || n.height * zoomScale > containerSize.height + 0.5
+    }
 }
 
 // MARK: - Drop zone (nothing opened yet)
