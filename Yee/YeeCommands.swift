@@ -4,7 +4,8 @@ import AppKit
 enum YeeMenuAction {
     case openFile
     case revealInFinder
-    case deleteCurrent
+    case moveToTrash
+    case deletePermanently
     case rotateCW
     case zoomIn, zoomOut, zoomReset, fitOnScreen
     case toggleFullScreen
@@ -44,8 +45,12 @@ struct YeeCommands: Commands {
 
             Divider()
 
-            Button(L("menu.delete")) { post(.deleteCurrent) }
+            // ⌫: straight to the Trash (recoverable, so no confirmation).
+            // ⇧⌫: permanent delete, always confirmed.
+            Button(L("menu.delete")) { post(.moveToTrash) }
                 .keyboardShortcut(.delete, modifiers: [])
+            Button(L("menu.deletePermanently")) { post(.deletePermanently) }
+                .keyboardShortcut(.delete, modifiers: .shift)
         }
 
         // Our items go into the system-provided View menu ("Présentation" in

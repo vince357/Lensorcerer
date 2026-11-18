@@ -27,7 +27,7 @@ The idea, requirements, and iterative testing came from a human ([vince357](http
 - Finder integration: double-click (once set as default app), drag & drop onto the Dock icon
 - Drag files or folders into the window to open them
 - Reveal in Finder (`⌘L`)
-- Move to Trash (`Delete`/`Backspace`), with confirmation — never a permanent delete
+- Move to Trash instantly (`Delete`), or delete permanently with confirmation (`Shift + Delete`)
 - High-quality rendering, including upscaled images (highest-resolution representation, high-quality interpolation)
 - Built-in help window (`⌘?`) with formats and shortcuts
 
@@ -62,7 +62,8 @@ Shortcuts are matched by the character typed, so they work the same on **AZERTY 
 | `⌘F` | Toggle full screen (the macOS shortcut `🌐F` also works) |
 | `⌘O` | Open file or folder |
 | `⌘L` | Reveal in Finder |
-| `Delete` / `Backspace` | Move current file to Trash (with confirmation) |
+| `Delete` | Move current file to Trash (no confirmation; recoverable from the Trash) |
+| `Shift + Delete` | Delete current file permanently, bypassing the Trash (with confirmation) |
 | `⌘,` | Preferences |
 | `⌘?` | Help |
 

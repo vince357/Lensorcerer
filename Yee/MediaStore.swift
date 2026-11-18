@@ -189,18 +189,25 @@ class MediaStore: ObservableObject {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
-    // MARK: - Trash
+    // MARK: - Delete
 
-    func deleteCurrentFile(completion: @escaping (Bool, String) -> Void) {
-        guard let file = currentFile else { completion(false, L("toast.noFile")); return }
+    /// Removes `file` from disk — to the Trash, or permanently (no Trash,
+    /// cannot be undone) — then drops it from the list. Takes the file
+    /// explicitly so a confirmation alert always deletes the file it named,
+    /// even if the current index changed meanwhile.
+    func delete(_ file: MediaFile, permanently: Bool, completion: @escaping (Bool, String) -> Void) {
         do {
-            try FileManager.default.trashItem(at: file.url, resultingItemURL: nil)
-            let idx = currentIndex
+            if permanently {
+                try FileManager.default.removeItem(at: file.url)
+            } else {
+                try FileManager.default.trashItem(at: file.url, resultingItemURL: nil)
+            }
+            let idx = files.firstIndex(where: { $0.url == file.url }) ?? currentIndex
             files.removeAll { $0.url == file.url }
             currentIndex = files.isEmpty ? 0 : min(idx, files.count - 1)
             pendingRotation = 0
             resetRandomHistory()
-            completion(true, L("toast.trashed", file.name))
+            completion(true, L(permanently ? "toast.deleted" : "toast.trashed", file.name))
         } catch {
             completion(false, L("toast.trashFailed", error.localizedDescription))
         }

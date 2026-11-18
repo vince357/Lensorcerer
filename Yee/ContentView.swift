@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var gifStepToken: Int = 0
     @State private var toastMessage: String? = nil
     @State private var showDeleteConfirm = false
+    @State private var fileToDeletePermanently: MediaFile? = nil
     @State private var hasOpenedAnything = false
     @State private var containerSize: CGSize = .zero
 
@@ -107,13 +108,14 @@ struct ContentView: View {
             store.reload()
         }
         .onDrop(of: [.fileURL], isTargeted: nil, perform: handleDrop)
-        .alert(L("alert.deleteTitle"), isPresented: $showDeleteConfirm) {
+        .alert(L("alert.deletePermanentTitle"), isPresented: $showDeleteConfirm,
+               presenting: fileToDeletePermanently) { file in
             Button(L("alert.cancel"), role: .cancel) {}
-            Button(L("alert.moveToTrash"), role: .destructive) {
-                store.deleteCurrentFile { _, msg in showToast(msg) }
+            Button(L("alert.deletePermanent"), role: .destructive) {
+                store.delete(file, permanently: true) { _, msg in showToast(msg) }
             }
-        } message: {
-            Text(store.currentFile?.name ?? "")
+        } message: { file in
+            Text(L("alert.deletePermanentMessage", file.name))
         }
     }
 
@@ -157,7 +159,8 @@ struct ContentView: View {
         switch action {
         case .openFile: presentOpenPanel()
         case .revealInFinder: store.revealInFinder()
-        case .deleteCurrent: if store.currentFile != nil { showDeleteConfirm = true }
+        case .moveToTrash: moveCurrentToTrash()
+        case .deletePermanently: askPermanentDelete()
         case .rotateCW: store.rotateCW()
         case .zoomIn: setZoom(currentZoomValue() + 0.25)
         case .zoomOut: setZoom(currentZoomValue() - 0.25)
@@ -177,6 +180,17 @@ struct ContentView: View {
     /// Scale currently shown on screen — the manual zoom, or the real fit
     /// scale when in auto-fit mode — so zooming from a fitted image starts
     /// from what the user actually sees instead of jumping from 100%.
+    private func moveCurrentToTrash() {
+        guard let file = store.currentFile else { return }
+        store.delete(file, permanently: false) { _, msg in showToast(msg) }
+    }
+
+    private func askPermanentDelete() {
+        guard let file = store.currentFile else { return }
+        fileToDeletePermanently = file
+        showDeleteConfirm = true
+    }
+
     private func currentZoomValue() -> CGFloat {
         ImageDisplayView.effectiveScale(zoomScale: zoomScale, natural: imagePixelSize,
                                         containerSize: containerSize,
@@ -234,7 +248,9 @@ struct ContentView: View {
                     }
                 }
             },
-            onDelete: { if store.currentFile != nil { showDeleteConfirm = true } },
+            onDelete: { permanently in
+                if permanently { askPermanentDelete() } else { moveCurrentToTrash() }
+            },
             onToggleFullScreen: { handle(.toggleFullScreen) }
         )
     }
@@ -290,7 +306,7 @@ struct KeyActionSet {
     let onSpace: () -> Void
     let onEnter: () -> Void
     let onArrow: (ArrowDirection) -> Void
-    let onDelete: () -> Void
+    let onDelete: (Bool) -> Void          // true = permanent (Shift held)
     let onToggleFullScreen: () -> Void
 }
 
@@ -341,7 +357,7 @@ class KeyCatcherNSView: NSView {
         case 124: a.onArrow(.right); return
         case 126: a.onArrow(.up); return
         case 125: a.onArrow(.down); return
-        case 51, 117: a.onDelete(); return                    // backspace / forward delete
+        case 51, 117: a.onDelete(shift); return               // ⌫ / ⌦ ; Shift = permanent
         default:
             super.keyDown(with: event)
         }

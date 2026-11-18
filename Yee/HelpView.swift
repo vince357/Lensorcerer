@@ -53,6 +53,7 @@ struct HelpView: View {
             ShortcutRow(key: "⌘L", description: L("help.sc.reveal")),
             ShortcutRow(key: "⌘R", description: L("help.sc.rotate")),
             ShortcutRow(key: "Delete", description: L("help.sc.delete")),
+            ShortcutRow(key: "Shift + Delete", description: L("help.sc.deletePermanent")),
             ShortcutRow(key: "⌘F", description: L("help.sc.fullscreen")),
             ShortcutRow(key: "*", description: L("help.sc.fit")),
             ShortcutRow(key: "0", description: L("help.sc.zoom100")),
