@@ -167,7 +167,6 @@ struct ContentView: View {
         case .zoomReset: setZoom(1.0)
         case .fitOnScreen: zoomScale = 0; panOffset = .zero
         case .toggleFullScreen: NSApp.mainWindow?.toggleFullScreen(nil)
-        case .toggleStatusBar: settings.showStatusBar.toggle(); settings.save()
         case .nextFile: store.goNext()
         case .previousFile: store.goPrevious()
         case .firstFile: store.goFirst()
@@ -177,9 +176,6 @@ struct ContentView: View {
         }
     }
 
-    /// Scale currently shown on screen — the manual zoom, or the real fit
-    /// scale when in auto-fit mode — so zooming from a fitted image starts
-    /// from what the user actually sees instead of jumping from 100%.
     private func moveCurrentToTrash() {
         guard let file = store.currentFile else { return }
         store.delete(file, permanently: false) { _, msg in showToast(msg) }
@@ -191,6 +187,9 @@ struct ContentView: View {
         showDeleteConfirm = true
     }
 
+    /// Scale currently shown on screen — the manual zoom, or the real fit
+    /// scale when in auto-fit mode — so zooming from a fitted image starts
+    /// from what the user actually sees instead of jumping from 100%.
     private func currentZoomValue() -> CGFloat {
         ImageDisplayView.effectiveScale(zoomScale: zoomScale, natural: imagePixelSize,
                                         containerSize: containerSize,

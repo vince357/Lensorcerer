@@ -24,17 +24,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         dispatch(url: first)
     }
 
-    // MARK: - Legacy hooks kept as a fallback (harmless if unused)
-    func application(_ sender: NSApplication, openFile filename: String) -> Bool {
-        dispatch(url: URL(fileURLWithPath: filename))
-        return true
-    }
-
-    func application(_ application: NSApplication, openFiles filenames: [String]) {
-        guard let first = filenames.first else { return }
-        dispatch(url: URL(fileURLWithPath: first))
-    }
-
     func applicationWillFinishLaunching(_ notification: Notification) {
         // No window tabs (Yee works with a single viewer window): removes the
         // system "Show Tab Bar" / "Show All Tabs" items from the View menu.

@@ -20,7 +20,7 @@ struct YeeApp: App {
         }
 
         // Help window
-        Window("Yee Help", id: "help") {
+        Window(L("help.windowTitle"), id: "help") {
             HelpView()
         }
     }

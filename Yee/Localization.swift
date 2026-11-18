@@ -64,10 +64,6 @@ enum L10n {
             "sort.size": "Size",
             "sort.fileType": "File Type",
 
-            "toast.saved": "Image saved.",
-            "toast.saveFailed": "Save failed: %@",
-            "toast.noRotation": "No pending rotation.",
-            "toast.noFile": "No file selected.",
             "toast.trashed": "“%@” moved to the Trash.",
             "toast.deleted": "“%@” permanently deleted.",
             "toast.trashFailed": "Error: %@",
@@ -76,7 +72,6 @@ enum L10n {
             "alert.cancel": "Cancel",
             "alert.deletePermanent": "Delete Permanently",
 
-            "prefs.title": "Preferences",
             "prefs.language": "Language",
             "prefs.section.opening": "Opening",
             "prefs.openFullScreen": "Open in full screen by default",
@@ -160,10 +155,6 @@ enum L10n {
             "sort.size": "Poids",
             "sort.fileType": "Type de fichier",
 
-            "toast.saved": "Image sauvegardée.",
-            "toast.saveFailed": "Échec de la sauvegarde : %@",
-            "toast.noRotation": "Aucune rotation en attente.",
-            "toast.noFile": "Aucun fichier sélectionné.",
             "toast.trashed": "« %@ » déplacé vers la Corbeille.",
             "toast.deleted": "« %@ » supprimé définitivement.",
             "toast.trashFailed": "Erreur : %@",
@@ -172,7 +163,6 @@ enum L10n {
             "alert.cancel": "Annuler",
             "alert.deletePermanent": "Supprimer définitivement",
 
-            "prefs.title": "Préférences",
             "prefs.language": "Langue",
             "prefs.section.opening": "Ouverture",
             "prefs.openFullScreen": "Ouvrir en plein écran par défaut",

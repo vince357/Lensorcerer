@@ -9,7 +9,6 @@ enum YeeMenuAction {
     case rotateCW
     case zoomIn, zoomOut, zoomReset, fitOnScreen
     case toggleFullScreen
-    case toggleStatusBar
     case nextFile, previousFile, firstFile, lastFile
     case randomFile, backFromRandom
 }

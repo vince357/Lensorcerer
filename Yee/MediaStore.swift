@@ -1,7 +1,5 @@
 import Foundation
 import AppKit
-import ImageIO
-import UniformTypeIdentifiers
 
 enum MediaKind: Int, Comparable {
     case image = 0, video = 1, other = 2
