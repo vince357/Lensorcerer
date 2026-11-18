@@ -98,22 +98,18 @@ struct YeeCommands: Commands {
                 ForEach(SortKey.allCases) { key in
                     Toggle(key.label, isOn: Binding(
                         get: { settings.sortKey == key },
-                        set: { if $0 { setSort(key: key) } }))
+                        set: { if $0 { settings.sortKey = key } }))
                 }
                 Divider()
                 Toggle(L("menu.sortAscending"), isOn: Binding(
                     get: { settings.sortDirection == .ascending },
-                    set: { if $0 { setSort(direction: .ascending) } }))
+                    set: { if $0 { settings.sortDirection = .ascending } }))
                 Toggle(L("menu.sortDescending"), isOn: Binding(
                     get: { settings.sortDirection == .descending },
-                    set: { if $0 { setSort(direction: .descending) } }))
+                    set: { if $0 { settings.sortDirection = .descending } }))
             }
 
             Toggle(L("menu.includeSubfolders"), isOn: $settings.includeSubfolders)
-                .onChange(of: settings.includeSubfolders) { _ in
-                    settings.save()
-                    NotificationCenter.default.post(name: .yeeSortChanged, object: nil)
-                }
         }
 
         CommandMenu(L("menu.navigation")) {
@@ -132,13 +128,6 @@ struct YeeCommands: Commands {
             Button(L("menu.backFromRandom")) { post(.backFromRandom) }
                 .keyboardShortcut("r", modifiers: .shift)
         }
-    }
-
-    private func setSort(key: SortKey? = nil, direction: SortDirection? = nil) {
-        if let key { settings.sortKey = key }
-        if let direction { settings.sortDirection = direction }
-        settings.save()
-        NotificationCenter.default.post(name: .yeeSortChanged, object: nil)
     }
 
     private func post(_ action: YeeMenuAction) {

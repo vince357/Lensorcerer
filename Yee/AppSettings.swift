@@ -22,26 +22,40 @@ final class AppSettings: ObservableObject {
     static let shared = AppSettings()
     private init() { load() }
 
-    @Published var language: AppLanguage = .english
+    /// Set while `load()` runs, so the property observers below don't write
+    /// half-loaded values back to UserDefaults.
+    private var isLoading = false
 
-    @Published var openFullScreenByDefault: Bool = false
-    @Published var alwaysFitOnOpen: Bool = true
-    @Published var singleWindowMode: Bool = true
+    /// Every setting saves itself when it changes; the ones that affect the
+    /// file list also ask the open window to reload it.
+    private func changed(reloadList: Bool = false) {
+        guard !isLoading else { return }
+        save()
+        if reloadList { NotificationCenter.default.post(name: .yeeSortChanged, object: nil) }
+    }
 
-    @Published var shrinkHorizontal: Bool  = true
-    @Published var shrinkVertical: Bool    = true
-    @Published var stretchHorizontal: Bool = false
-    @Published var stretchVertical: Bool   = false
+    @Published var language: AppLanguage = .english { didSet { changed() } }
 
-    @Published var showStatusBar: Bool = true
+    @Published var openFullScreenByDefault: Bool = false { didSet { changed() } }
+    @Published var alwaysFitOnOpen: Bool = true { didSet { changed() } }
+    @Published var singleWindowMode: Bool = true { didSet { changed() } }
 
-    @Published var sortKey: SortKey         = .name
-    @Published var sortDirection: SortDirection = .ascending
-    @Published var includeSubfolders: Bool  = false
+    @Published var shrinkHorizontal: Bool  = true { didSet { changed() } }
+    @Published var shrinkVertical: Bool    = true { didSet { changed() } }
+    @Published var stretchHorizontal: Bool = false { didSet { changed() } }
+    @Published var stretchVertical: Bool   = false { didSet { changed() } }
+
+    @Published var showStatusBar: Bool = true { didSet { changed() } }
+
+    @Published var sortKey: SortKey         = .name { didSet { changed(reloadList: true) } }
+    @Published var sortDirection: SortDirection = .ascending { didSet { changed(reloadList: true) } }
+    @Published var includeSubfolders: Bool  = false { didSet { changed(reloadList: true) } }
 
     private let defaults = UserDefaults.standard
 
     func load() {
+        isLoading = true
+        defer { isLoading = false }
         if let raw = defaults.string(forKey: "language"), let l = AppLanguage(rawValue: raw) {
             language = l
         } else {

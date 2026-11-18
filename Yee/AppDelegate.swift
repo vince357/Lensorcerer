@@ -1,8 +1,7 @@
 import AppKit
 
 extension Notification.Name {
-    static let openImageURL    = Notification.Name("yee.openImageURL")
-    static let openFolderURL   = Notification.Name("yee.openFolderURL")
+    static let openURL         = Notification.Name("yee.openURL")   // file or folder
     static let yeeMenuAction   = Notification.Name("yee.menuAction")
     static let yeeSortChanged  = Notification.Name("yee.sortChanged")
 }
@@ -61,12 +60,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func dispatch(url: URL) {
-        var isDir: ObjCBool = false
-        FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
-        let name: Notification.Name = isDir.boolValue ? .openFolderURL : .openImageURL
-
         Self.pendingURL = url
-        NotificationCenter.default.post(name: name, object: url)
+        NotificationCenter.default.post(name: .openURL, object: url)
 
         for attempt in 1...6 {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(attempt) * 0.25) {

@@ -42,24 +42,12 @@ struct PreferencesView: View {
         }
         .padding(24)
         .frame(width: 440)
-        .onDisappear { settings.save() }
+        // Settings save themselves (see AppSettings); only the language
+        // change needs extra work here.
         .onChange(of: settings.language) { newValue in
-            settings.save()
             UserDefaults.standard.set([newValue.rawValue], forKey: "AppleLanguages")
             promptRestartIfNeeded()
         }
-        .onChange(of: settings.openFullScreenByDefault) { _ in settings.save() }
-        .onChange(of: settings.alwaysFitOnOpen) { _ in settings.save() }
-        .onChange(of: settings.singleWindowMode) { _ in settings.save() }
-        .onChange(of: settings.includeSubfolders) { _ in
-            settings.save()
-            NotificationCenter.default.post(name: .yeeSortChanged, object: nil)
-        }
-        .onChange(of: settings.showStatusBar) { _ in settings.save() }
-        .onChange(of: settings.shrinkHorizontal) { _ in settings.save() }
-        .onChange(of: settings.shrinkVertical) { _ in settings.save() }
-        .onChange(of: settings.stretchHorizontal) { _ in settings.save() }
-        .onChange(of: settings.stretchVertical) { _ in settings.save() }
     }
 
     /// A section with its bold title on the LEFT and its controls stacked on

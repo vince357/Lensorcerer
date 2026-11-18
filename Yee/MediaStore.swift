@@ -7,8 +7,8 @@ enum MediaKind: Int, Comparable {
 }
 
 struct MediaFile: Identifiable, Equatable {
-    let id = UUID()
     let url: URL
+    var id: URL { url }
     var name: String { url.lastPathComponent }
     var dateModified: Date
     var fileSize: Int

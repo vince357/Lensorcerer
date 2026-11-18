@@ -83,23 +83,8 @@ struct ContentView: View {
             updateWindowTitle()
         }
         .onChange(of: store.currentFolderURL) { _ in updateWindowTitle() }
-        .onReceive(NotificationCenter.default.publisher(for: .openImageURL)) { notif in
-            if let url = notif.object as? URL {
-                AppDelegate.pendingURL = nil
-                hasOpenedAnything = true
-                store.openFile(url: url)
-                zoomScale = 0; panOffset = .zero
-                updateWindowTitle()
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .openFolderURL)) { notif in
-            if let url = notif.object as? URL {
-                AppDelegate.pendingURL = nil
-                hasOpenedAnything = true
-                store.openFolder(url: url)
-                zoomScale = 0; panOffset = .zero
-                updateWindowTitle()
-            }
+        .onReceive(NotificationCenter.default.publisher(for: .openURL)) { notif in
+            if let url = notif.object as? URL { open(url) }
         }
         .onReceive(NotificationCenter.default.publisher(for: .yeeMenuAction)) { notif in
             if let action = notif.object as? YeeMenuAction { handle(action) }
@@ -123,8 +108,9 @@ struct ContentView: View {
         DispatchQueue.main.async { NSApp.mainWindow?.title = store.currentFile?.name ?? "Yee" }
     }
 
-    private func consumePendingURLIfNeeded() {
-        guard let url = AppDelegate.pendingURL else { return }
+    /// Single entry point for opening a file or a folder, whatever the
+    /// source (Finder/Dock, cold launch, drag & drop, Open panel).
+    private func open(_ url: URL) {
         AppDelegate.pendingURL = nil
         hasOpenedAnything = true
         var isDir: ObjCBool = false
@@ -132,6 +118,10 @@ struct ContentView: View {
         if isDir.boolValue { store.openFolder(url: url) } else { store.openFile(url: url) }
         zoomScale = 0; panOffset = .zero
         updateWindowTitle()
+    }
+
+    private func consumePendingURLIfNeeded() {
+        if let url = AppDelegate.pendingURL { open(url) }
     }
 
     private func showToast(_ msg: String) {
@@ -143,14 +133,7 @@ struct ContentView: View {
         guard let provider = providers.first else { return false }
         provider.loadItem(forTypeIdentifier: "public.file-url", options: nil) { item, _ in
             guard let data = item as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) else { return }
-            DispatchQueue.main.async {
-                hasOpenedAnything = true
-                var isDir: ObjCBool = false
-                FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
-                if isDir.boolValue { store.openFolder(url: url) } else { store.openFile(url: url) }
-                zoomScale = 0; panOffset = .zero
-                updateWindowTitle()
-            }
+            DispatchQueue.main.async { open(url) }
         }
         return true
     }
@@ -203,14 +186,7 @@ struct ContentView: View {
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = true
         panel.canChooseFiles = true
-        if panel.runModal() == .OK, let url = panel.url {
-            hasOpenedAnything = true
-            var isDir: ObjCBool = false
-            FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
-            if isDir.boolValue { store.openFolder(url: url) } else { store.openFile(url: url) }
-            zoomScale = 0; panOffset = .zero
-            updateWindowTitle()
-        }
+        if panel.runModal() == .OK, let url = panel.url { open(url) }
     }
 
     // MARK: - Low-level keyboard: arrows (pan/nav), space (GIF), enter (resume),
