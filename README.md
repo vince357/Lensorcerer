@@ -8,57 +8,63 @@ The idea, requirements, and iterative testing came from a human ([vince357](http
 
 ## Features
 
-- Native macOS menu bar (File, Affichage, Navigation) — no icon palettes
-- Fit modes: shrink/stretch H/V independently, "always fit on open"
-- Manual zoom `+`/`-` (hold `Shift` for finer increments), `0` = 100%, `*`/`/` = reset with fit options
-- **Pan** with mouse drag or arrow keys when the image is zoomed beyond the window
-- Lossless 90° clockwise rotation (`⌘R`), save losslessly (`⌘S`)
-- Navigation: arrows (pan or next/prev depending on zoom), `Page Up`/`Page Down`, `Shift+Page Up`/`Shift+Page Down` (first/last), `Home`/`End`
-- Random image (`R`), go back (`Shift+R`)
-- Animated GIFs: looped playback, pause & frame-step with `Space`
+- Native macOS menu bar (File, View, Navigation) — no icon palettes
+- Interface in English or French (Preferences › Language)
+- Fit modes: shrink/stretch horizontally and vertically, independently; "always fit on open"
+- Zoom with `+`/`-` (`Shift` for finer steps), `0` = 100%, `*` = back to fit; zooming starts from the scale currently on screen
+- Status bar shows the real on-screen zoom level, including in fit mode
+- **Pan** with mouse drag or arrow keys when the zoomed image is larger than the window
+- 90° clockwise rotation (`⌘R`) — display only, the file is never modified
+- Navigation: arrows (pan or previous/next depending on zoom), `Page Up`/`Page Down`, `Home`/`End`; the list loops
+- Random image (`R`), go back through the random history (`Shift+R`)
+- Animated GIFs: looped playback, pause & frame-step with `Space`, resume with `Return`
 - Sorting: name, date modified, size, or file type (image/video), ascending/descending
 - Include subfolders (navigation + sort)
-- Preferences window (⌘,): default fullscreen, always-fit, subfolders, status bar, fit options
-- Status bar: filename, dimensions, size, zoom %, position in list
+- Single-window mode (on by default): opening a file reuses the current window
+- Preferences window (`⌘,`): language, open in full screen, always fit, subfolders, single window, status bar, fit options
+- Status bar: file name, pixel dimensions, file size, zoom %, position in list
 - Window title = current file name
-- Finder integration: double-click (once set as default app), Dock drag & drop
-- Drag files/folders in; drag the current image out to Finder or another app
+- Finder integration: double-click (once set as default app), drag & drop onto the Dock icon
+- Drag files or folders into the window to open them
 - Reveal in Finder (`⌘L`)
-- Delete to Trash (`Delete`/`Backspace`), with confirmation — never permanent
-- Maximum-quality rendering, including upscaled images (uses the highest-resolution representation available and high-quality interpolation)
+- Move to Trash (`Delete`/`Backspace`), with confirmation — never a permanent delete
+- High-quality rendering, including upscaled images (highest-resolution representation, high-quality interpolation)
+- Built-in help window (`⌘?`) with formats and shortcuts
 
 ### Supported formats
 
-Images: JPG, PNG, GIF (animated), WebP, BMP, ICO, HEIC/HEIF, TIFF, PDF, SVG, most RAW formats (CR2, CR3, NEF, ARW, DNG, ORF, RAF, RW2, SRW, PEF…), PSD, TGA, EXR, HDR.
+Images: JPG, PNG, GIF (animated), WebP, BMP, ICO, CUR, HEIC/HEIF, TIFF, SVG, PSD, TGA, EXR, HDR, PNM/PBM/PGM/PPM, SGI, PIC, XBM.
 
-Video: MP4, MOV, M4V, AVI, MKV, WebM (basic preview via AVKit).
+Video (basic preview via AVKit): MP4, MOV, M4V, plus AVI, MKV, WebM, MPG/MPEG, WMV, FLV, 3GP when macOS can decode them.
+
+Decoding relies on macOS's own frameworks, so a file only displays if macOS supports its format and codec. PDF and camera RAW files are not supported.
 
 ---
 
 ## Keyboard shortcuts
 
-All navigation/zoom shortcuts use hardware key codes, so they work identically on **AZERTY (French) and QWERTY** keyboards.
+Shortcuts are matched by the character typed, so they work the same on **AZERTY (French) and QWERTY** keyboards.
 
 | Key | Action |
 |---|---|
-| `←` `→` `↑` `↓` | Pan when zoomed in; otherwise `←`/`→` go to previous/next image |
+| `←` `→` `↑` `↓` | Pan when the zoomed image is larger than the window; otherwise `←`/`→` go to previous/next image |
 | `Page Up` / `Page Down` | Previous / next image |
-| `Shift + Page Up` / `Shift + Page Down` | First / last image |
 | `Home` / `End` | First / last image |
 | `R` | Random image |
 | `Shift + R` | Go back from random |
 | `+` / `-` | Zoom in / out |
 | `Shift + (+/-)` | Fine zoom in / out |
 | `0` | Zoom 100% |
-| `*` or `/` | Reset zoom, respecting fit options |
+| `*` | Fit on screen, respecting fit options |
 | `Space` | Pause GIF / step one frame while paused |
-| `⌘R` | Rotate 90° clockwise |
-| `⌘S` | Save rotation losslessly |
-| `⌘F` | Toggle full screen |
+| `Return` | Resume GIF playback |
+| `⌘R` | Rotate 90° clockwise (display only) |
+| `⌘F` | Toggle full screen (the macOS shortcut `🌐F` also works) |
 | `⌘O` | Open file or folder |
 | `⌘L` | Reveal in Finder |
-| `Delete` / `Backspace` | Move current file to Trash (confirm) |
+| `Delete` / `Backspace` | Move current file to Trash (with confirmation) |
 | `⌘,` | Preferences |
+| `⌘?` | Help |
 
 ---
 
