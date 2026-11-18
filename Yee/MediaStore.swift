@@ -14,11 +14,15 @@ struct MediaFile: Identifiable, Equatable {
     var fileSize: Int
     var kind: MediaKind
 
+    /// Resource keys prefetched while listing the folder, so building the
+    /// list doesn't hit the disk again for every file.
+    static let resourceKeys: [URLResourceKey] = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
+
     init(url: URL) {
         self.url = url
-        let attrs = (try? FileManager.default.attributesOfItem(atPath: url.path)) ?? [:]
-        self.dateModified = attrs[.modificationDate] as? Date ?? .distantPast
-        self.fileSize     = attrs[.size] as? Int ?? 0
+        let values = try? url.resourceValues(forKeys: [.contentModificationDateKey, .fileSizeKey])
+        self.dateModified = values?.contentModificationDate ?? .distantPast
+        self.fileSize     = values?.fileSize ?? 0
         let ext = url.pathExtension.lowercased()
         if MediaStore.imageExtensions.contains(ext) { self.kind = .image }
         else if MediaStore.videoExtensions.contains(ext) { self.kind = .video }
@@ -84,7 +88,7 @@ class MediaStore: ObservableObject {
 
         if settings.includeSubfolders {
             if let e = fm.enumerator(at: folder,
-                                     includingPropertiesForKeys: [.isDirectoryKey],
+                                     includingPropertiesForKeys: MediaFile.resourceKeys,
                                      options: [.skipsHiddenFiles]) {
                 for case let url as URL in e {
                     let isDir = (try? url.resourceValues(forKeys:[.isDirectoryKey]))?.isDirectory ?? false
@@ -95,7 +99,7 @@ class MediaStore: ObservableObject {
             }
         } else {
             if let contents = try? fm.contentsOfDirectory(at: folder,
-                                                           includingPropertiesForKeys: [],
+                                                           includingPropertiesForKeys: MediaFile.resourceKeys,
                                                            options: [.skipsHiddenFiles]) {
                 collected = contents.filter { Self.allExtensions.contains($0.pathExtension.lowercased()) }
             }

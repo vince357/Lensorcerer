@@ -207,13 +207,21 @@ struct AnimatedGIFView: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSImageView, context: Context) {
         if context.coordinator.loadedURL != url {
-            context.coordinator.loadedURL = url
-            let img = NSImage(contentsOf: url)
-            context.coordinator.animatedImage = img
-            nsView.image = img
-            context.coordinator.frames = []
-            context.coordinator.frameIndex = 0
-            DispatchQueue.main.async { naturalSize = img?.size }
+            let coordinator = context.coordinator
+            coordinator.loadedURL = url
+            coordinator.frames = []
+            coordinator.frameIndex = 0
+            // Load off the main thread so a large GIF doesn't freeze the UI.
+            let requestedURL = url
+            DispatchQueue.global(qos: .userInitiated).async {
+                let img = NSImage(contentsOf: requestedURL)
+                DispatchQueue.main.async {
+                    guard coordinator.loadedURL == requestedURL else { return }  // stale result
+                    coordinator.animatedImage = img
+                    nsView.image = img
+                    naturalSize = img?.size
+                }
+            }
         }
 
         // Detect a paused -> resumed transition: while stepping frame-by-frame
@@ -269,7 +277,15 @@ struct VideoPreviewView: NSViewRepresentable {
     }
     func updateNSView(_ nsView: AVPlayerView, context: Context) {
         if (nsView.player?.currentItem?.asset as? AVURLAsset)?.url != url {
+            nsView.player?.pause()
             nsView.player = AVPlayer(url: url)
         }
+    }
+
+    /// Stop playback when the view goes away (e.g. moving to the next file),
+    /// so the previous video's sound doesn't keep playing.
+    static func dismantleNSView(_ nsView: AVPlayerView, coordinator: ()) {
+        nsView.player?.pause()
+        nsView.player = nil
     }
 }
