@@ -87,24 +87,22 @@ struct YeeCommands: Commands {
 
             Divider()
 
+            // Sort key and direction as native checkable items (Toggle), so the
+            // menu shows the system checkmark on the active choice. Previously
+            // the direction was a single item with a "✓" baked into its label.
             Menu(L("menu.sortBy")) {
                 ForEach(SortKey.allCases) { key in
-                    Button {
-                        settings.sortKey = key
-                        settings.save()
-                        NotificationCenter.default.post(name: .yeeSortChanged, object: nil)
-                    } label: {
-                        HStack { Text(key.label); if settings.sortKey == key { Image(systemName: "checkmark") } }
-                    }
+                    Toggle(key.label, isOn: Binding(
+                        get: { settings.sortKey == key },
+                        set: { if $0 { setSort(key: key) } }))
                 }
                 Divider()
-                Button {
-                    settings.sortDirection = settings.sortDirection == .ascending ? .descending : .ascending
-                    settings.save()
-                    NotificationCenter.default.post(name: .yeeSortChanged, object: nil)
-                } label: {
-                    Text(settings.sortDirection == .ascending ? L("menu.sortAscending") : L("menu.sortDescending"))
-                }
+                Toggle(L("menu.sortAscending"), isOn: Binding(
+                    get: { settings.sortDirection == .ascending },
+                    set: { if $0 { setSort(direction: .ascending) } }))
+                Toggle(L("menu.sortDescending"), isOn: Binding(
+                    get: { settings.sortDirection == .descending },
+                    set: { if $0 { setSort(direction: .descending) } }))
             }
 
             Toggle(L("menu.includeSubfolders"), isOn: $settings.includeSubfolders)
@@ -130,6 +128,13 @@ struct YeeCommands: Commands {
             Button(L("menu.backFromRandom")) { post(.backFromRandom) }
                 .keyboardShortcut("r", modifiers: .shift)
         }
+    }
+
+    private func setSort(key: SortKey? = nil, direction: SortDirection? = nil) {
+        if let key { settings.sortKey = key }
+        if let direction { settings.sortDirection = direction }
+        settings.save()
+        NotificationCenter.default.post(name: .yeeSortChanged, object: nil)
     }
 
     private func post(_ action: YeeMenuAction) {

@@ -46,8 +46,8 @@ enum L10n {
             "menu.alwaysFit": "Always Fit Opened Images on Screen",
             "menu.showStatusBar": "Show Status Bar",
             "menu.sortBy": "Sort By",
-            "menu.sortAscending": "Ascending ✓",
-            "menu.sortDescending": "Descending ✓",
+            "menu.sortAscending": "Ascending",
+            "menu.sortDescending": "Descending",
             "menu.includeSubfolders": "Include Subfolders",
 
             "menu.navigation": "Navigation",
@@ -138,8 +138,8 @@ enum L10n {
             "menu.alwaysFit": "Toujours ajuster les images à l'ouverture",
             "menu.showStatusBar": "Afficher la barre de statut",
             "menu.sortBy": "Trier par",
-            "menu.sortAscending": "Ordre croissant ✓",
-            "menu.sortDescending": "Ordre décroissant ✓",
+            "menu.sortAscending": "Ordre croissant",
+            "menu.sortDescending": "Ordre décroissant",
             "menu.includeSubfolders": "Inclure les sous-dossiers",
 
             "menu.navigation": "Navigation",
