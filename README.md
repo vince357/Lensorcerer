@@ -13,12 +13,12 @@ The idea, requirements, and iterative testing came from a human ([vince357](http
 - Native macOS menu bar (File, View, Navigation) — no icon palettes
 - Interface in English or French (Preferences › Language)
 - Fit modes: shrink/stretch horizontally and vertically, independently; "always fit on open"
-- Zoom with `+`/`-` (`Shift` for finer steps), `0` = 100%, `*` = back to fit; zooming starts from the scale currently on screen
+- Zoom with `=`/`-` (hold `Shift` for finer steps), `0` = 100%, `*` = back to fit; zooming starts from the scale currently on screen
 - Status bar shows the real on-screen zoom level, including in fit mode
 - **Pan** with mouse drag or arrow keys when the zoomed image is larger than the window
 - 90° clockwise rotation (`⌘R`) — display only, the file is never modified
 - Navigation: arrows (pan or previous/next depending on zoom), `Page Up`/`Page Down`, `Home`/`End`; the list loops
-- Random image (`R`), go back through the random history (`Shift+R`)
+- Random image (`R`), go back through the random history (`⇧R`)
 - Animated GIFs: looped playback, pause & frame-step with `Space`, resume with `Return`
 - Sorting: name, date modified, size, or file type (image/video), ascending/descending
 - Include subfolders (navigation + sort)
@@ -30,7 +30,7 @@ The idea, requirements, and iterative testing came from a human ([vince357](http
 - Drag files or folders into the window to open them
 - Reveal in Finder (`⌘L`)
 - **Copy To… / Move To…** (`⇧⌘C` / `⇧⌘M`), Xee-style: a side panel with Copy | Move tabs and the last 10 destination folders — double-click a folder (or select it with `↑`/`↓` and press `Return`) to copy or move the current file there; the selection is kept from one file to the next; `Esc` closes the panel. If a file with the same name exists, a window compares both versions (preview, dimensions, size, date) and offers Overwrite, Skip or Duplicate
-- Move to Trash instantly (`Delete`), or delete permanently with confirmation (`Shift + Delete`)
+- Move to Trash instantly (`⌫`), or delete permanently with confirmation (`⇧⌫`)
 - High-quality rendering, including upscaled images (highest-resolution representation, high-quality interpolation)
 - Built-in help window (`⌘?`) with formats and shortcuts
 
@@ -46,30 +46,59 @@ Decoding relies on macOS's own frameworks, so a file only displays if macOS supp
 
 ## Keyboard shortcuts
 
-Shortcuts are matched by the character typed, so they work the same on **AZERTY (French) and QWERTY** keyboards.
+Shortcuts are matched by the character typed, so they work the same on **AZERTY (French) and QWERTY** keyboards. Every shortcut is also listed in the built-in help window (`⌘?`).
+
+### Navigation
 
 | Key | Action |
 |---|---|
-| `←` `→` `↑` `↓` | Pan when the zoomed image is larger than the window; otherwise `←`/`→` go to previous/next image |
-| `Page Up` / `Page Down` | Previous / next image |
-| `Home` / `End` | First / last image |
+| `←` / `→` | Previous / next image (when the image fits in the window) |
+| `Page Up` / `Page Down` (`⇞` / `⇟`) | Previous / next image |
+| `Home` / `End` (`↖` / `↘`) | First / last image |
 | `R` | Random image |
-| `Shift + R` | Go back from random |
-| `+` / `-` | Zoom in / out |
-| `Shift + (+/-)` | Fine zoom in / out |
+| `⇧R` | Go back through the random history |
+
+The list loops: after the last image comes the first one.
+
+### View
+
+| Key | Action |
+|---|---|
+| `=` / `-` | Zoom in / out (numeric keypad `+` / `-` too) |
+| `+` / `_` (`⇧=` / `⇧-`) | Fine zoom in / out |
 | `0` | Zoom 100% |
 | `*` | Fit on screen, respecting fit options |
-| `Space` | Pause GIF / step one frame while paused |
-| `Return` | Resume GIF playback |
-| `⌘R` | Rotate 90° clockwise (display only) |
-| `⌘F` | Toggle full screen (the macOS shortcut `🌐F` also works) |
-| `⌘O` | Open file or folder |
+| `←` `→` `↑` `↓` | Pan when the zoomed image is larger than the window (mouse drag works too) |
+| `⌘R` | Rotate 90° clockwise (display only, the file is not modified) |
+| `⌘F` | Toggle full screen (macOS's `🌐F` / `⌃⌘F` also work) |
+| `Space` | Animated GIF: pause / step one frame while paused |
+| `Return` (`↩`) | Animated GIF: resume playback |
+
+### Files
+
+| Key | Action |
+|---|---|
+| `⌘O` | Open a file or folder |
 | `⌘L` | Reveal in Finder |
-| `⇧⌘C` / `⇧⌘M` | Copy To… / Move To… (opens the destinations panel) |
-| `Esc` | Close the destinations panel |
-| `↑` / `↓` then `Return` | With the panel open: select a destination folder, then copy/move to it |
-| `Delete` | Move current file to Trash (no confirmation; recoverable from the Trash) |
-| `Shift + Delete` | Delete current file permanently, bypassing the Trash (with confirmation) |
+| `⌫` (or `⌦`) | Move current file to the Trash (no confirmation, recoverable from the Trash) |
+| `⇧⌫` | Delete current file permanently, bypassing the Trash (with confirmation) |
+| `⇧⌘C` | Copy To… (opens the destinations panel on the Copy tab) |
+| `⇧⌘M` | Move To… (opens the destinations panel on the Move tab) |
+
+### Destinations panel (Copy To… / Move To…)
+
+| Key | Action |
+|---|---|
+| `↑` / `↓` | Select a destination folder (when the image isn't zoomed in) |
+| `Return` (`↩`) | Copy or move the current file to the selected folder |
+| `Esc` (`⎋`) | Close the panel |
+
+In the name-conflict window: `Return` = Duplicate, `Esc` = Skip.
+
+### App
+
+| Key | Action |
+|---|---|
 | `⌘,` | Preferences |
 | `⌘?` | Help |
 

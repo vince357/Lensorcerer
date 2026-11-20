@@ -109,6 +109,7 @@ enum L10n {
             "help.sc.gifPause": "Pause GIF / step one frame",
             "help.sc.gifResume": "Resume GIF playback",
             "help.sc.prefs": "Preferences",
+            "key.space": "Space",
 
             "menu.copyTo": "Copy To…",
             "menu.moveTo": "Move To…",
@@ -231,6 +232,7 @@ enum L10n {
             "help.sc.gifPause": "Pause GIF / avancer d'une frame",
             "help.sc.gifResume": "Reprendre la lecture du GIF",
             "help.sc.prefs": "Préférences",
+            "key.space": "Espace",
 
             "menu.copyTo": "Copier vers…",
             "menu.moveTo": "Déplacer vers…",
