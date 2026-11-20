@@ -19,7 +19,7 @@ struct StatusBarView: View {
                     Text("\(Int(size.width)) × \(Int(size.height)) px")
                 }
 
-                Text(formatSize(file.fileSize))
+                Text(formatFileSize(file.fileSize))
 
                 Text("\(displayedZoomPercent)%")
                     .monospacedDigit()
@@ -37,11 +37,14 @@ struct StatusBarView: View {
         }
     }
 
-    private func formatSize(_ bytes: Int) -> String {
-        let kb = Double(bytes) / 1024
-        let unitKB = AppSettings.shared.language == .french ? "Ko" : "KB"
-        let unitMB = AppSettings.shared.language == .french ? "Mo" : "MB"
-        if kb < 1024 { return String(format: "%.0f %@", kb, unitKB) }
-        return String(format: "%.1f %@", kb / 1024, unitMB)
-    }
+}
+
+/// File size in KB/MB (Ko/Mo in French), shared by the status bar and the
+/// copy/move conflict window.
+func formatFileSize(_ bytes: Int) -> String {
+    let kb = Double(bytes) / 1024
+    let unitKB = AppSettings.shared.language == .french ? "Ko" : "KB"
+    let unitMB = AppSettings.shared.language == .french ? "Mo" : "MB"
+    if kb < 1024 { return String(format: "%.0f %@", kb, unitKB) }
+    return String(format: "%.1f %@", kb / 1024, unitMB)
 }

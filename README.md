@@ -29,7 +29,7 @@ The idea, requirements, and iterative testing came from a human ([vince357](http
 - Finder integration: double-click (once set as default app), drag & drop onto the Dock icon
 - Drag files or folders into the window to open them
 - Reveal in Finder (`⌘L`)
-- **Copy To… / Move To…** (`⇧⌘C` / `⇧⌘M`), Xee-style: a side panel with Copy | Move tabs and the last 10 destination folders — double-click a folder to copy or move the current file there; `Esc` closes the panel
+- **Copy To… / Move To…** (`⇧⌘C` / `⇧⌘M`), Xee-style: a side panel with Copy | Move tabs and the last 10 destination folders — double-click a folder (or select it with `↑`/`↓` and press `Return`) to copy or move the current file there; the selection is kept from one file to the next; `Esc` closes the panel. If a file with the same name exists, a window compares both versions (preview, dimensions, size, date) and offers Overwrite, Skip or Duplicate
 - Move to Trash instantly (`Delete`), or delete permanently with confirmation (`Shift + Delete`)
 - High-quality rendering, including upscaled images (highest-resolution representation, high-quality interpolation)
 - Built-in help window (`⌘?`) with formats and shortcuts
@@ -67,6 +67,7 @@ Shortcuts are matched by the character typed, so they work the same on **AZERTY 
 | `⌘L` | Reveal in Finder |
 | `⇧⌘C` / `⇧⌘M` | Copy To… / Move To… (opens the destinations panel) |
 | `Esc` | Close the destinations panel |
+| `↑` / `↓` then `Return` | With the panel open: select a destination folder, then copy/move to it |
 | `Delete` | Move current file to Trash (no confirmation; recoverable from the Trash) |
 | `Shift + Delete` | Delete current file permanently, bypassing the Trash (with confirmation) |
 | `⌘,` | Preferences |

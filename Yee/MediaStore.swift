@@ -193,11 +193,6 @@ class MediaStore: ObservableObject {
 
     // MARK: - Copy / Move
 
-    /// Where `file` would land in `folder`.
-    func destinationURL(for file: MediaFile, in folder: URL) -> URL {
-        folder.appendingPathComponent(file.name)
-    }
-
     /// First free "name 2.ext", "name 3.ext"… in `folder` (Finder-style).
     func uniqueURL(for file: MediaFile, in folder: URL) -> URL {
         let base = file.url.deletingPathExtension().lastPathComponent

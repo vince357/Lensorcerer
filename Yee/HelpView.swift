@@ -57,6 +57,7 @@ struct HelpView: View {
             ShortcutRow(key: "⇧⌘C", description: L("help.sc.copyTo")),
             ShortcutRow(key: "⇧⌘M", description: L("help.sc.moveTo")),
             ShortcutRow(key: "Esc", description: L("help.sc.closePanel")),
+            ShortcutRow(key: "↑ ↓ + Return", description: L("help.sc.panelRun")),
             ShortcutRow(key: "⌘F", description: L("help.sc.fullscreen")),
             ShortcutRow(key: "*", description: L("help.sc.fit")),
             ShortcutRow(key: "0", description: L("help.sc.zoom100")),

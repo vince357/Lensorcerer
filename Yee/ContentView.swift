@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var showTransferPanel = false
     @State private var transferMode: TransferMode = .copy
     @State private var pendingConflict: TransferRequest? = nil
-    @State private var showConflict = false
+    @State private var selectedDestination: String? = nil
 
     var body: some View {
         HStack(spacing: 0) {
@@ -71,6 +71,7 @@ struct ContentView: View {
 
             if showTransferPanel {
                 DestinationsPanel(mode: $transferMode,
+                                  selected: $selectedDestination,
                                   onChooseFolder: chooseDestination,
                                   onPerform: { transferCurrent(to: $0) },
                                   onClose: closeTransferPanel)
@@ -116,16 +117,15 @@ struct ContentView: View {
         } message: { file in
             Text(L("alert.deletePermanentMessage", file.name))
         }
-        .alert(L("conflict.title"), isPresented: $showConflict, presenting: pendingConflict) { req in
-            Button(L("conflict.replace"), role: .destructive) {
-                runTransfer(req, to: store.destinationURL(for: req.file, in: req.folder), replacing: true)
+        .sheet(item: $pendingConflict) { req in
+            ConflictView(request: req) { choice in
+                pendingConflict = nil
+                switch choice {
+                case .overwrite: runTransfer(req, to: req.existingURL, replacing: true)
+                case .duplicate: runTransfer(req, to: store.uniqueURL(for: req.file, in: req.folder), replacing: false)
+                case .skip: focusViewer()
+                }
             }
-            Button(L("conflict.keepBoth")) {
-                runTransfer(req, to: store.uniqueURL(for: req.file, in: req.folder), replacing: false)
-            }
-            Button(L("alert.cancel"), role: .cancel) { focusViewer() }
-        } message: { req in
-            Text(L("conflict.message", req.file.name, req.folder.lastPathComponent))
         }
         .onChange(of: transferMode) { _ in focusViewer() }
     }
@@ -191,6 +191,10 @@ struct ContentView: View {
 
     private func openTransferPanel(_ mode: TransferMode) {
         transferMode = mode
+        // Pre-select the most recent folder so Return works right away.
+        if selectedDestination == nil || !settings.destinationHistory.contains(selectedDestination!) {
+            selectedDestination = settings.destinationHistory.first
+        }
         withAnimation(.easeOut(duration: 0.15)) { showTransferPanel = true }
     }
 
@@ -224,19 +228,27 @@ struct ContentView: View {
             showToast(L("transfer.sameFolder")); return
         }
         settings.rememberDestination(folder)
+        selectedDestination = folder.path
         let req = TransferRequest(file: file, folder: folder, mode: transferMode)
-        let target = store.destinationURL(for: file, in: folder)
-        if FileManager.default.fileExists(atPath: target.path) {
-            pendingConflict = req
-            showConflict = true
+        if FileManager.default.fileExists(atPath: req.existingURL.path) {
+            pendingConflict = req          // ask: overwrite / skip / duplicate
         } else {
-            runTransfer(req, to: target, replacing: false)
+            runTransfer(req, to: req.existingURL, replacing: false)
         }
     }
 
     private func runTransfer(_ req: TransferRequest, to target: URL, replacing: Bool) {
         store.transfer(req.file, to: target, mode: req.mode, replacing: replacing) { _, msg in showToast(msg) }
         focusViewer()
+    }
+
+    /// ↑/↓ (when not panning) move the selection in the destinations list.
+    private func moveDestinationSelection(by step: Int) {
+        let list = settings.destinationHistory
+        guard showTransferPanel, !list.isEmpty else { return }
+        let current = selectedDestination.flatMap { list.firstIndex(of: $0) } ?? -1
+        let next = min(max(current + step, 0), list.count - 1)
+        selectedDestination = list[next]
     }
 
     /// Gives keyboard focus back to the image (arrows, Delete, Escape…)
@@ -289,7 +301,12 @@ struct ContentView: View {
                 if !gifPaused { gifPaused = true } else { gifStepToken += 1 }
             },
             onEnter: {
-                if gifPaused { gifPaused = false }
+                // Panel open with a folder selected: Return runs Copy/Move.
+                if showTransferPanel, let path = selectedDestination {
+                    transferCurrent(to: URL(fileURLWithPath: path, isDirectory: true))
+                } else if gifPaused {
+                    gifPaused = false
+                }
             },
             onArrow: { direction in
                 if isZoomedBeyond() {
@@ -305,7 +322,8 @@ struct ContentView: View {
                     switch direction {
                     case .left:  store.goPrevious()
                     case .right: store.goNext()
-                    default: break
+                    case .up:    moveDestinationSelection(by: -1)
+                    case .down:  moveDestinationSelection(by: 1)
                     }
                 }
             },
@@ -373,12 +391,6 @@ struct KeyActionSet {
     let onEscape: () -> Void
 }
 
-/// A copy/move waiting for the user's answer about a name conflict.
-struct TransferRequest {
-    let file: MediaFile
-    let folder: URL
-    let mode: TransferMode
-}
 
 struct KeyCatcher: NSViewRepresentable {
     let actions: KeyActionSet
