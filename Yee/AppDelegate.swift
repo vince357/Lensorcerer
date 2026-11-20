@@ -4,6 +4,7 @@ extension Notification.Name {
     static let openURL         = Notification.Name("yee.openURL")   // file or folder
     static let yeeMenuAction   = Notification.Name("yee.menuAction")
     static let yeeSortChanged  = Notification.Name("yee.sortChanged")
+    static let yeeFocusViewer  = Notification.Name("yee.focusViewer")
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {

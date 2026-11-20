@@ -51,6 +51,21 @@ final class AppSettings: ObservableObject {
     @Published var sortDirection: SortDirection = .ascending { didSet { changed(reloadList: true) } }
     @Published var includeSubfolders: Bool  = false { didSet { changed(reloadList: true) } }
 
+    /// Folders used with Copy to / Move to, most recent first.
+    @Published var destinationHistory: [String] = [] { didSet { changed() } }
+    static let maxDestinations = 10
+
+    /// Puts `folder` at the top of the history (once), capped at maxDestinations.
+    func rememberDestination(_ folder: URL) {
+        var list = destinationHistory.filter { $0 != folder.path }
+        list.insert(folder.path, at: 0)
+        destinationHistory = Array(list.prefix(Self.maxDestinations))
+    }
+
+    func forgetDestination(_ path: String) {
+        destinationHistory.removeAll { $0 == path }
+    }
+
     private let defaults = UserDefaults.standard
 
     func load() {
@@ -73,6 +88,7 @@ final class AppSettings: ObservableObject {
         includeSubfolders       = defaults.bool(forKey: "subfolders")
         if let raw = defaults.string(forKey: "sortKey"), let k = SortKey(rawValue: raw) { sortKey = k }
         if let raw = defaults.string(forKey: "sortDir"), let d = SortDirection(rawValue: raw) { sortDirection = d }
+        destinationHistory      = defaults.stringArray(forKey: "destinations") ?? []
     }
 
     func save() {
@@ -88,5 +104,6 @@ final class AppSettings: ObservableObject {
         defaults.set(includeSubfolders,       forKey: "subfolders")
         defaults.set(sortKey.rawValue,        forKey: "sortKey")
         defaults.set(sortDirection.rawValue,  forKey: "sortDir")
+        defaults.set(destinationHistory,      forKey: "destinations")
     }
 }

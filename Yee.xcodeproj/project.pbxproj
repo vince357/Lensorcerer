@@ -14,6 +14,7 @@
 		B005 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A005 /* AppSettings.swift */; };
 		B006 /* ImageDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A006 /* ImageDisplayView.swift */; };
 		B007 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A007 /* StatusBarView.swift */; };
+		B020 /* DestinationsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A020 /* DestinationsPanel.swift */; };
 		B008 /* YeeCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A008 /* YeeCommands.swift */; };
 		B009 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A011 /* PreferencesView.swift */; };
 		B010 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A012 /* Assets.xcassets */; };
@@ -29,6 +30,7 @@
 		A005 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		A006 /* ImageDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDisplayView.swift; sourceTree = "<group>"; };
 		A007 /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
+		A020 /* DestinationsPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationsPanel.swift; sourceTree = "<group>"; };
 		A008 /* YeeCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YeeCommands.swift; sourceTree = "<group>"; };
 		A009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A010 /* Yee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Yee.entitlements; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 				A011 /* PreferencesView.swift */,
 				A006 /* ImageDisplayView.swift */,
 				A007 /* StatusBarView.swift */,
+				A020 /* DestinationsPanel.swift */,
 				A008 /* YeeCommands.swift */,
 				A013 /* Localization.swift */,
 				A014 /* HelpView.swift */,
@@ -165,6 +168,7 @@
 				B009 /* PreferencesView.swift in Sources */,
 				B006 /* ImageDisplayView.swift in Sources */,
 				B007 /* StatusBarView.swift in Sources */,
+				B020 /* DestinationsPanel.swift in Sources */,
 				B008 /* YeeCommands.swift in Sources */,
 				B011 /* Localization.swift in Sources */,
 				B012 /* HelpView.swift in Sources */,

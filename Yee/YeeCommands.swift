@@ -6,6 +6,7 @@ enum YeeMenuAction {
     case revealInFinder
     case moveToTrash
     case deletePermanently
+    case copyTo, moveTo
     case rotateCW
     case zoomIn, zoomOut, zoomReset, fitOnScreen
     case toggleFullScreen
@@ -41,6 +42,14 @@ struct YeeCommands: Commands {
 
             Button(L("menu.rotate")) { post(.rotateCW) }
                 .keyboardShortcut("r", modifiers: .command)
+
+            Divider()
+
+            // Open the destinations panel on the matching tab.
+            Button(L("menu.copyTo")) { post(.copyTo) }
+                .keyboardShortcut("c", modifiers: [.command, .shift])
+            Button(L("menu.moveTo")) { post(.moveTo) }
+                .keyboardShortcut("m", modifiers: [.command, .shift])
 
             Divider()
 

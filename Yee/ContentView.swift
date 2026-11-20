@@ -17,52 +17,66 @@ struct ContentView: View {
     @State private var fileToDeletePermanently: MediaFile? = nil
     @State private var hasOpenedAnything = false
     @State private var containerSize: CGSize = .zero
+    @State private var showTransferPanel = false
+    @State private var transferMode: TransferMode = .copy
+    @State private var pendingConflict: TransferRequest? = nil
+    @State private var showConflict = false
 
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
+        HStack(spacing: 0) {
+            ZStack {
+                Color.black.ignoresSafeArea()
 
-            if store.files.isEmpty {
-                if hasOpenedAnything && store.lastOpenWasEmpty {
-                    EmptyFolderView()
+                if store.files.isEmpty {
+                    if hasOpenedAnything && store.lastOpenWasEmpty {
+                        EmptyFolderView()
+                    } else {
+                        DropZoneView()
+                    }
                 } else {
-                    DropZoneView()
+                    ImageDisplayView(store: store,
+                                      zoomScale: $zoomScale,
+                                      imagePixelSize: $imagePixelSize,
+                                      panOffset: $panOffset,
+                                      gifPaused: $gifPaused,
+                                      containerSize: $containerSize,
+                                      stepRequestToken: gifStepToken,
+                                      nudgeToken: nudgeToken,
+                                      nudgeDelta: nudgeDelta)
                 }
-            } else {
-                ImageDisplayView(store: store,
-                                  zoomScale: $zoomScale,
-                                  imagePixelSize: $imagePixelSize,
-                                  panOffset: $panOffset,
-                                  gifPaused: $gifPaused,
-                                  containerSize: $containerSize,
-                                  stepRequestToken: gifStepToken,
-                                  nudgeToken: nudgeToken,
-                                  nudgeDelta: nudgeDelta)
-            }
 
-            VStack {
-                Spacer()
-                StatusBarView(store: store,
-                              imagePixelSize: imagePixelSize,
-                              displayedZoomPercent: Int(round(currentZoomValue() * 100)))
-            }
-
-            if let msg = toastMessage {
                 VStack {
                     Spacer()
-                    Text(msg)
-                        .font(.callout)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(Color.black.opacity(0.75))
-                        .cornerRadius(10)
-                        .padding(.bottom, settings.showStatusBar ? 40 : 16)
+                    StatusBarView(store: store,
+                                  imagePixelSize: imagePixelSize,
+                                  displayedZoomPercent: Int(round(currentZoomValue() * 100)))
                 }
-                .transition(.opacity)
+
+                if let msg = toastMessage {
+                    VStack {
+                        Spacer()
+                        Text(msg)
+                            .font(.callout)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.black.opacity(0.75))
+                            .cornerRadius(10)
+                            .padding(.bottom, settings.showStatusBar ? 40 : 16)
+                    }
+                    .transition(.opacity)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            if showTransferPanel {
+                DestinationsPanel(mode: $transferMode,
+                                  onChooseFolder: chooseDestination,
+                                  onPerform: { transferCurrent(to: $0) },
+                                  onClose: closeTransferPanel)
+                    .onExitCommand(perform: closeTransferPanel)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(KeyCatcher(actions: keyActions))
         .onAppear {
             if let w = NSApp.keyWindow ?? NSApp.mainWindow, w.identifier == nil {
@@ -102,6 +116,18 @@ struct ContentView: View {
         } message: { file in
             Text(L("alert.deletePermanentMessage", file.name))
         }
+        .alert(L("conflict.title"), isPresented: $showConflict, presenting: pendingConflict) { req in
+            Button(L("conflict.replace"), role: .destructive) {
+                runTransfer(req, to: store.destinationURL(for: req.file, in: req.folder), replacing: true)
+            }
+            Button(L("conflict.keepBoth")) {
+                runTransfer(req, to: store.uniqueURL(for: req.file, in: req.folder), replacing: false)
+            }
+            Button(L("alert.cancel"), role: .cancel) { focusViewer() }
+        } message: { req in
+            Text(L("conflict.message", req.file.name, req.folder.lastPathComponent))
+        }
+        .onChange(of: transferMode) { _ in focusViewer() }
     }
 
     private func updateWindowTitle() {
@@ -144,6 +170,8 @@ struct ContentView: View {
         case .revealInFinder: store.revealInFinder()
         case .moveToTrash: moveCurrentToTrash()
         case .deletePermanently: askPermanentDelete()
+        case .copyTo: openTransferPanel(.copy)
+        case .moveTo: openTransferPanel(.move)
         case .rotateCW: store.rotateCW()
         case .zoomIn: setZoom(currentZoomValue() + 0.25)
         case .zoomOut: setZoom(currentZoomValue() - 0.25)
@@ -157,6 +185,64 @@ struct ContentView: View {
         case .randomFile: store.goRandom()
         case .backFromRandom: store.goBackFromRandom()
         }
+    }
+
+    // MARK: - Copy to / Move to
+
+    private func openTransferPanel(_ mode: TransferMode) {
+        transferMode = mode
+        withAnimation(.easeOut(duration: 0.15)) { showTransferPanel = true }
+    }
+
+    private func closeTransferPanel() {
+        withAnimation(.easeOut(duration: 0.15)) { showTransferPanel = false }
+        focusViewer()
+    }
+
+    /// "Choose a Destination…": pick a folder, then copy/move right away.
+    private func chooseDestination() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.canCreateDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.prompt = L("transfer.choosePrompt")
+        if panel.runModal() == .OK, let url = panel.url { transferCurrent(to: url) }
+        focusViewer()
+    }
+
+    /// Copies or moves the current file to `folder` (per the selected tab),
+    /// asking first if a file with the same name is already there.
+    private func transferCurrent(to folder: URL) {
+        defer { focusViewer() }
+        guard let file = store.currentFile else { return }
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir), isDir.boolValue else {
+            showToast(L("transfer.missingFolder", folder.lastPathComponent)); return
+        }
+        if folder.standardizedFileURL.path == file.url.deletingLastPathComponent().standardizedFileURL.path {
+            showToast(L("transfer.sameFolder")); return
+        }
+        settings.rememberDestination(folder)
+        let req = TransferRequest(file: file, folder: folder, mode: transferMode)
+        let target = store.destinationURL(for: file, in: folder)
+        if FileManager.default.fileExists(atPath: target.path) {
+            pendingConflict = req
+            showConflict = true
+        } else {
+            runTransfer(req, to: target, replacing: false)
+        }
+    }
+
+    private func runTransfer(_ req: TransferRequest, to target: URL, replacing: Bool) {
+        store.transfer(req.file, to: target, mode: req.mode, replacing: replacing) { _, msg in showToast(msg) }
+        focusViewer()
+    }
+
+    /// Gives keyboard focus back to the image (arrows, Delete, Escape…)
+    /// after interacting with the panel.
+    private func focusViewer() {
+        NotificationCenter.default.post(name: .yeeFocusViewer, object: nil)
     }
 
     private func moveCurrentToTrash() {
@@ -226,7 +312,8 @@ struct ContentView: View {
             onDelete: { permanently in
                 if permanently { askPermanentDelete() } else { moveCurrentToTrash() }
             },
-            onToggleFullScreen: { handle(.toggleFullScreen) }
+            onToggleFullScreen: { handle(.toggleFullScreen) },
+            onEscape: { if showTransferPanel { closeTransferPanel() } }
         )
     }
 
@@ -283,6 +370,14 @@ struct KeyActionSet {
     let onArrow: (ArrowDirection) -> Void
     let onDelete: (Bool) -> Void          // true = permanent (Shift held)
     let onToggleFullScreen: () -> Void
+    let onEscape: () -> Void
+}
+
+/// A copy/move waiting for the user's answer about a name conflict.
+struct TransferRequest {
+    let file: MediaFile
+    let folder: URL
+    let mode: TransferMode
 }
 
 struct KeyCatcher: NSViewRepresentable {
@@ -300,6 +395,16 @@ class KeyCatcherNSView: NSView {
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
         window?.makeFirstResponder(self)
+        NotificationCenter.default.removeObserver(self, name: .yeeFocusViewer, object: nil)
+        if window != nil {
+            NotificationCenter.default.addObserver(self, selector: #selector(takeFocus),
+                                                   name: .yeeFocusViewer, object: nil)
+        }
+    }
+
+    @objc private func takeFocus() {
+        guard let w = window, w.isKeyWindow || w.isMainWindow else { return }
+        w.makeFirstResponder(self)
     }
 
     override func keyDown(with event: NSEvent) {
@@ -333,6 +438,7 @@ class KeyCatcherNSView: NSView {
         case 126: a.onArrow(.up); return
         case 125: a.onArrow(.down); return
         case 51, 117: a.onDelete(shift); return               // ⌫ / ⌦ ; Shift = permanent
+        case 53: a.onEscape(); return                          // escape
         default:
             super.keyDown(with: event)
         }

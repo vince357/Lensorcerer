@@ -191,6 +191,61 @@ class MediaStore: ObservableObject {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
+    // MARK: - Copy / Move
+
+    /// Where `file` would land in `folder`.
+    func destinationURL(for file: MediaFile, in folder: URL) -> URL {
+        folder.appendingPathComponent(file.name)
+    }
+
+    /// First free "name 2.ext", "name 3.ext"… in `folder` (Finder-style).
+    func uniqueURL(for file: MediaFile, in folder: URL) -> URL {
+        let base = file.url.deletingPathExtension().lastPathComponent
+        let ext = file.url.pathExtension
+        var n = 2
+        while true {
+            let name = ext.isEmpty ? "\(base) \(n)" : "\(base) \(n).\(ext)"
+            let candidate = folder.appendingPathComponent(name)
+            if !FileManager.default.fileExists(atPath: candidate.path) { return candidate }
+            n += 1
+        }
+    }
+
+    /// Copies or moves `file` to `target` (full destination URL, already
+    /// conflict-resolved). `replacing` removes an existing file there first.
+    /// A move takes the file out of the list and shows the next one.
+    func transfer(_ file: MediaFile, to target: URL, mode: TransferMode, replacing: Bool,
+                  completion: @escaping (Bool, String) -> Void) {
+        let fm = FileManager.default
+        let folderName = target.deletingLastPathComponent().lastPathComponent
+        do {
+            if replacing, fm.fileExists(atPath: target.path) {
+                try fm.trashItem(at: target, resultingItemURL: nil)
+            }
+            switch mode {
+            case .copy:
+                try fm.copyItem(at: file.url, to: target)
+                completion(true, L("toast.copied", folderName))
+            case .move:
+                try fm.moveItem(at: file.url, to: target)
+                removeFromList(file)
+                completion(true, L("toast.moved", folderName))
+            }
+        } catch {
+            completion(false, L("toast.trashFailed", error.localizedDescription))
+        }
+    }
+
+    /// Drops `file` from the list after it left the folder (moved or
+    /// deleted), keeping the position so the next file is shown.
+    private func removeFromList(_ file: MediaFile) {
+        let idx = files.firstIndex(where: { $0.url == file.url }) ?? currentIndex
+        files.removeAll { $0.url == file.url }
+        currentIndex = files.isEmpty ? 0 : min(idx, files.count - 1)
+        pendingRotation = 0
+        resetRandomHistory()
+    }
+
     // MARK: - Delete
 
     /// Removes `file` from disk — to the Trash, or permanently (no Trash,
@@ -204,11 +259,7 @@ class MediaStore: ObservableObject {
             } else {
                 try FileManager.default.trashItem(at: file.url, resultingItemURL: nil)
             }
-            let idx = files.firstIndex(where: { $0.url == file.url }) ?? currentIndex
-            files.removeAll { $0.url == file.url }
-            currentIndex = files.isEmpty ? 0 : min(idx, files.count - 1)
-            pendingRotation = 0
-            resetRandomHistory()
+            removeFromList(file)
             completion(true, L(permanently ? "toast.deleted" : "toast.trashed", file.name))
         } catch {
             completion(false, L("toast.trashFailed", error.localizedDescription))
