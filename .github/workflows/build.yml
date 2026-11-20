@@ -1,0 +1,69 @@
+# Builds Yee on every push and pull request.
+#
+# Compiler errors and warnings are published as annotations on the commit
+# (visible in the "Checks" tab and readable through the GitHub API), so the
+# result can be checked without opening the full log.
+
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (macOS)
+    runs-on: macos-15
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project Yee.xcodeproj \
+            -target Yee \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee build.log
+
+      - name: Report errors and warnings
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os, re
+          workspace = os.environ["GITHUB_WORKSPACE"]
+          pattern = re.compile(r"^(/[^:]+):(\d+):(\d+): (error|warning): (.*)$")
+          seen, counts = set(), {"error": 0, "warning": 0}
+          try:
+              lines = open("build.log", errors="replace").read().splitlines()
+          except FileNotFoundError:
+              lines = []
+          for line in lines:
+              m = pattern.match(line.strip())
+              if not m or m.group(0) in seen:
+                  continue
+              seen.add(m.group(0))
+              path, row, col, kind, msg = m.groups()
+              counts[kind] += 1
+              rel = os.path.relpath(path, workspace)
+              print(f"::{kind} file={rel},line={row},col={col}::{msg}")
+          print(f"::notice title=Build summary::{counts['error']} error(s), {counts['warning']} warning(s)")
+          # A failure without a compiler message (e.g. a linker or project
+          # error): surface the end of the log so it is still visible.
+          if counts["error"] == 0 and not any("** BUILD SUCCEEDED **" in l for l in lines):
+              tail = "%0A".join(l.replace("%", "%25") for l in lines[-40:])
+              print(f"::error title=Build did not succeed (log tail)::{tail}")
+          PY
