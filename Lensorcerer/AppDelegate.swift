@@ -1,10 +1,10 @@
 import AppKit
 
 extension Notification.Name {
-    static let openURL         = Notification.Name("yee.openURL")   // file or folder
-    static let yeeMenuAction   = Notification.Name("yee.menuAction")
-    static let yeeSortChanged  = Notification.Name("yee.sortChanged")
-    static let yeeFocusViewer  = Notification.Name("yee.focusViewer")
+    static let openURL         = Notification.Name("lensorcerer.openURL")   // file or folder
+    static let menuAction      = Notification.Name("lensorcerer.menuAction")
+    static let sortChanged     = Notification.Name("lensorcerer.sortChanged")
+    static let focusViewer     = Notification.Name("lensorcerer.focusViewer")
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -25,7 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillFinishLaunching(_ notification: Notification) {
-        // No window tabs (Yee works with a single viewer window): removes the
+        // No window tabs (Lensorcerer works with a single viewer window): removes the
         // system "Show Tab Bar" / "Show All Tabs" items from the View menu.
         NSWindow.allowsAutomaticWindowTabbing = false
     }
@@ -41,7 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Identifier tagged onto every main content window (see ContentView's
     /// onAppear) so we can tell them apart from the Preferences/About/Help
     /// windows when enforcing single-window mode.
-    static let mainWindowID = NSUserInterfaceItemIdentifier("YeeMainWindow")
+    static let mainWindowID = NSUserInterfaceItemIdentifier("LensorcererMainWindow")
 
     /// When "single window" mode is on, Finder/Dock can still cause macOS to
     /// spin up an extra window per open request (a side effect of declaring

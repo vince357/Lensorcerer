@@ -101,10 +101,10 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .openURL)) { notif in
             if let url = notif.object as? URL { open(url) }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .yeeMenuAction)) { notif in
-            if let action = notif.object as? YeeMenuAction { handle(action) }
+        .onReceive(NotificationCenter.default.publisher(for: .menuAction)) { notif in
+            if let action = notif.object as? MenuAction { handle(action) }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .yeeSortChanged)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .sortChanged)) { _ in
             store.reload()
         }
         .onDrop(of: [.fileURL], isTargeted: nil, perform: handleDrop)
@@ -131,7 +131,7 @@ struct ContentView: View {
     }
 
     private func updateWindowTitle() {
-        DispatchQueue.main.async { NSApp.mainWindow?.title = store.currentFile?.name ?? "Yee" }
+        DispatchQueue.main.async { NSApp.mainWindow?.title = store.currentFile?.name ?? "Lensorcerer" }
     }
 
     /// Single entry point for opening a file or a folder, whatever the
@@ -164,7 +164,7 @@ struct ContentView: View {
         return true
     }
 
-    private func handle(_ action: YeeMenuAction) {
+    private func handle(_ action: MenuAction) {
         switch action {
         case .openFile: presentOpenPanel()
         case .revealInFinder: store.revealInFinder()
@@ -254,7 +254,7 @@ struct ContentView: View {
     /// Gives keyboard focus back to the image (arrows, Delete, Escape…)
     /// after interacting with the panel.
     private func focusViewer() {
-        NotificationCenter.default.post(name: .yeeFocusViewer, object: nil)
+        NotificationCenter.default.post(name: .focusViewer, object: nil)
     }
 
     private func moveCurrentToTrash() {
@@ -407,10 +407,10 @@ class KeyCatcherNSView: NSView {
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
         window?.makeFirstResponder(self)
-        NotificationCenter.default.removeObserver(self, name: .yeeFocusViewer, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .focusViewer, object: nil)
         if window != nil {
             NotificationCenter.default.addObserver(self, selector: #selector(takeFocus),
-                                                   name: .yeeFocusViewer, object: nil)
+                                                   name: .focusViewer, object: nil)
         }
     }
 

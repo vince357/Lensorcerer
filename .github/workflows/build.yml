@@ -1,4 +1,4 @@
-# Builds Yee on every push and pull request.
+# Builds Lensorcerer on every push and pull request.
 #
 # Compiler errors and warnings are published as annotations on the commit
 # (visible in the "Checks" tab and readable through the GitHub API), so the
@@ -31,8 +31,8 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild \
-            -project Yee.xcodeproj \
-            -target Yee \
+            -project Lensorcerer.xcodeproj \
+            -target Lensorcerer \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \

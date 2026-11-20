@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B001 /* YeeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001 /* YeeApp.swift */; };
+		B001 /* LensorcererApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001 /* LensorcererApp.swift */; };
 		B002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A002 /* ContentView.swift */; };
 		B003 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A003 /* MediaStore.swift */; };
 		B004 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A004 /* AppDelegate.swift */; };
 		B005 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A005 /* AppSettings.swift */; };
 		B006 /* ImageDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A006 /* ImageDisplayView.swift */; };
 		B007 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A007 /* StatusBarView.swift */; };
-		B008 /* YeeCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A008 /* YeeCommands.swift */; };
+		B008 /* LensorcererCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A008 /* LensorcererCommands.swift */; };
 		B009 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A011 /* PreferencesView.swift */; };
 		B010 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A012 /* Assets.xcassets */; };
 		B011 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A013 /* Localization.swift */; };
@@ -23,22 +23,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A001 /* YeeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YeeApp.swift; sourceTree = "<group>"; };
+		A001 /* LensorcererApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensorcererApp.swift; sourceTree = "<group>"; };
 		A002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A003 /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStore.swift; sourceTree = "<group>"; };
 		A004 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A005 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		A006 /* ImageDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDisplayView.swift; sourceTree = "<group>"; };
 		A007 /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
-		A008 /* YeeCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YeeCommands.swift; sourceTree = "<group>"; };
+		A008 /* LensorcererCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensorcererCommands.swift; sourceTree = "<group>"; };
 		A009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A010 /* Yee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Yee.entitlements; sourceTree = "<group>"; };
+		A010 /* Lensorcerer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Lensorcerer.entitlements; sourceTree = "<group>"; };
 		A011 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		A012 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A013 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		A014 /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
 		A020 /* DestinationsPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationsPanel.swift; sourceTree = "<group>"; };
-		PROD /* Yee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yee.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		PROD /* Lensorcerer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lensorcerer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,10 +52,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		GRP1 /* Yee */ = {
+		GRP1 /* Lensorcerer */ = {
 			isa = PBXGroup;
 			children = (
-				A001 /* YeeApp.swift */,
+				A001 /* LensorcererApp.swift */,
 				A004 /* AppDelegate.swift */,
 				A002 /* ContentView.swift */,
 				A003 /* MediaStore.swift */,
@@ -64,20 +64,20 @@
 				A006 /* ImageDisplayView.swift */,
 				A007 /* StatusBarView.swift */,
 				A020 /* DestinationsPanel.swift */,
-				A008 /* YeeCommands.swift */,
+				A008 /* LensorcererCommands.swift */,
 				A013 /* Localization.swift */,
 				A014 /* HelpView.swift */,
 				A012 /* Assets.xcassets */,
 				A009 /* Info.plist */,
-				A010 /* Yee.entitlements */,
+				A010 /* Lensorcerer.entitlements */,
 			);
-			path = Yee;
+			path = Lensorcerer;
 			sourceTree = "<group>";
 		};
 		GRP2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				PROD /* Yee.app */,
+				PROD /* Lensorcerer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,7 +85,7 @@
 		ROOT = {
 			isa = PBXGroup;
 			children = (
-				GRP1 /* Yee */,
+				GRP1 /* Lensorcerer */,
 				GRP2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -93,9 +93,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		TGT1 /* Yee */ = {
+		TGT1 /* Lensorcerer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = XCL1 /* Build configuration list for PBXNativeTarget "Yee" */;
+			buildConfigurationList = XCL1 /* Build configuration list for PBXNativeTarget "Lensorcerer" */;
 			buildPhases = (
 				SRC1 /* Sources */,
 				FW01 /* Frameworks */,
@@ -105,9 +105,9 @@
 			);
 			dependencies = (
 			);
-			name = Yee;
-			productName = Yee;
-			productReference = PROD /* Yee.app */;
+			name = Lensorcerer;
+			productName = Lensorcerer;
+			productReference = PROD /* Lensorcerer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -125,7 +125,7 @@
 					};
 				};
 			};
-			buildConfigurationList = XCL0 /* Build configuration list for PBXProject "Yee" */;
+			buildConfigurationList = XCL0 /* Build configuration list for PBXProject "Lensorcerer" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -139,7 +139,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				TGT1 /* Yee */,
+				TGT1 /* Lensorcerer */,
 			);
 		};
 /* End PBXProject section */
@@ -160,7 +160,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B001 /* YeeApp.swift in Sources */,
+				B001 /* LensorcererApp.swift in Sources */,
 				B004 /* AppDelegate.swift in Sources */,
 				B002 /* ContentView.swift in Sources */,
 				B003 /* MediaStore.swift in Sources */,
@@ -169,7 +169,7 @@
 				B006 /* ImageDisplayView.swift in Sources */,
 				B007 /* StatusBarView.swift in Sources */,
 				B020 /* DestinationsPanel.swift in Sources */,
-				B008 /* YeeCommands.swift in Sources */,
+				B008 /* LensorcererCommands.swift in Sources */,
 				B011 /* Localization.swift in Sources */,
 				B012 /* HelpView.swift in Sources */,
 			);
@@ -292,20 +292,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Yee/Yee.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Lensorcerer/Lensorcerer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = Yee/Info.plist;
+				INFOPLIST_FILE = Lensorcerer/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 0.93.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vince357.Yee;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vince357.Lensorcerer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -317,20 +317,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Yee/Yee.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Lensorcerer/Lensorcerer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = Yee/Info.plist;
+				INFOPLIST_FILE = Lensorcerer/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 0.93.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.vince357.Yee;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vince357.Lensorcerer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -340,7 +340,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		XCL0 /* Build configuration list for PBXProject "Yee" */ = {
+		XCL0 /* Build configuration list for PBXProject "Lensorcerer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CFG1 /* Debug */,
@@ -349,7 +349,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		XCL1 /* Build configuration list for PBXNativeTarget "Yee" */ = {
+		XCL1 /* Build configuration list for PBXNativeTarget "Lensorcerer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CFG3 /* Debug */,

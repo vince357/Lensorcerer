@@ -1,6 +1,8 @@
-# 🖼️ Yee — A Xee³ Successor for Apple Silicon
+# 🖼️ Lensorcerer — A Xee³ Successor for Apple Silicon
 
-[![Build](https://github.com/vince357/Yee/actions/workflows/build.yml/badge.svg)](https://github.com/vince357/Yee/actions/workflows/build.yml)
+*Formerly named **Yee**; renamed to avoid confusion with an unrelated project of the same name.*
+
+[![Build](https://github.com/vince357/Lensorcerer/actions/workflows/build.yml/badge.svg)](https://github.com/vince357/Lensorcerer/actions/workflows/build.yml)
 
 > A fast, native macOS image viewer, built in Swift/SwiftUI, in homage to [Xee³](https://theunarchiver.com/xee).
 
@@ -113,22 +115,22 @@ In the name-conflict window: `Return` = Duplicate, `Esc` = Skip.
 ### Build & run
 
 ```bash
-git clone https://github.com/vince357/Yee.git
-cd Yee
-open Yee.xcodeproj
+git clone https://github.com/vince357/Lensorcerer.git
+cd Lensorcerer
+open Lensorcerer.xcodeproj
 ```
 
 In Xcode: **Signing & Capabilities** → select your Apple ID under **Team** → press **⌘R**.
 
-### Set Yee as default viewer (enables Finder double-click)
+### Set Lensorcerer as default viewer (enables Finder double-click)
 
-Right-click an image → **Get Info** → **Open with** → **Yee** → **Change All...**
+Right-click an image → **Get Info** → **Open with** → **Lensorcerer** → **Change All...**
 
 ### If macOS blocks the app
 
 **System Settings → Privacy & Security → Open Anyway**, or:
 ```bash
-xattr -cr /path/to/Yee.app
+xattr -cr /path/to/Lensorcerer.app
 ```
 
 ---

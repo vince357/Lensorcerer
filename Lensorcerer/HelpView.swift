@@ -4,7 +4,7 @@ struct HelpView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Yee")
+                Text("Lensorcerer")
                     .font(.largeTitle.bold())
 
                 VStack(alignment: .leading, spacing: 8) {

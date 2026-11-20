@@ -10,7 +10,7 @@
 		<string>fr</string>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>Yee</string>
+	<string>Lensorcerer</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>

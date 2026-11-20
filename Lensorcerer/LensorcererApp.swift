@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 @main
-struct YeeApp: App {
+struct LensorcererApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
@@ -11,7 +11,7 @@ struct YeeApp: App {
                 .frame(minWidth: 400, minHeight: 300)
         }
         .commands {
-            YeeCommands()
+            LensorcererCommands()
         }
 
         // Preferences window

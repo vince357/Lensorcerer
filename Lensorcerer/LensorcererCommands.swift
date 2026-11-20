@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-enum YeeMenuAction {
+enum MenuAction {
     case openFile
     case revealInFinder
     case moveToTrash
@@ -14,7 +14,7 @@ enum YeeMenuAction {
     case randomFile, backFromRandom
 }
 
-struct YeeCommands: Commands {
+struct LensorcererCommands: Commands {
     @ObservedObject private var settings = AppSettings.shared
     @Environment(\.openWindow) private var openWindow
 
@@ -65,7 +65,7 @@ struct YeeCommands: Commands {
         // French) instead of a CommandMenu of our own: a separate CommandMenu
         // produced a second "View"/"Affichage" menu next to the system one.
         // Replacing the .toolbar group also drops "Show/Customize Toolbar",
-        // which made no sense here (Yee has no toolbar).
+        // which made no sense here (Lensorcerer has no toolbar).
         // No full-screen item of our own: macOS already adds its standard
         // "Enter/Exit Full Screen" (⌃⌘F) to this menu; ⌘F is still handled
         // by KeyCatcher in ContentView.
@@ -139,8 +139,8 @@ struct YeeCommands: Commands {
         }
     }
 
-    private func post(_ action: YeeMenuAction) {
-        NotificationCenter.default.post(name: .yeeMenuAction, object: action)
+    private func post(_ action: MenuAction) {
+        NotificationCenter.default.post(name: .menuAction, object: action)
     }
 
     private func showAboutPanel() {
@@ -154,13 +154,13 @@ struct YeeCommands: Commands {
         // NSString length (UTF-16), not Swift's character count, so the range
         // stays correct with accented or other non-ASCII characters.
         linkRange = NSRange(location: linkStart, length: (linkText as NSString).length)
-        full.addAttribute(.link, value: "https://github.com/vince357/Yee", range: linkRange)
+        full.addAttribute(.link, value: "https://github.com/vince357/Lensorcerer", range: linkRange)
         full.addAttribute(.font, value: NSFont.systemFont(ofSize: 12), range: NSRange(location: 0, length: full.length))
 
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
         NSApp.orderFrontStandardAboutPanel(options: [
             .credits: full,
-            NSApplication.AboutPanelOptionKey(rawValue: "ApplicationName"): "Yee",
+            NSApplication.AboutPanelOptionKey(rawValue: "ApplicationName"): "Lensorcerer",
             .applicationVersion: version
         ])
     }

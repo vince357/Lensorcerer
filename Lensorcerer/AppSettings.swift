@@ -31,7 +31,7 @@ final class AppSettings: ObservableObject {
     private func changed(reloadList: Bool = false) {
         guard !isLoading else { return }
         save()
-        if reloadList { NotificationCenter.default.post(name: .yeeSortChanged, object: nil) }
+        if reloadList { NotificationCenter.default.post(name: .sortChanged, object: nil) }
     }
 
     @Published var language: AppLanguage = .english { didSet { changed() } }
@@ -68,7 +68,24 @@ final class AppSettings: ObservableObject {
 
     private let defaults = UserDefaults.standard
 
+    /// The app was called Yee (bundle id com.vince357.Yee) before being
+    /// renamed Lensorcerer. On first launch under the new identifier, copy
+    /// the settings saved under the old one so nothing is lost.
+    private func migrateFromFormerIdentifierIfNeeded() {
+        let flag = "migratedFromYee"
+        guard !defaults.bool(forKey: flag) else { return }
+        defaults.set(true, forKey: flag)
+        guard let old = UserDefaults(suiteName: "com.vince357.Yee") else { return }
+        let keys = ["language", "openFullScreen", "alwaysFit", "singleWindow",
+                    "shrinkH", "shrinkV", "stretchH", "stretchV", "statusBar",
+                    "subfolders", "sortKey", "sortDir", "destinations", "AppleLanguages"]
+        for key in keys where defaults.object(forKey: key) == nil {
+            if let value = old.object(forKey: key) { defaults.set(value, forKey: key) }
+        }
+    }
+
     func load() {
+        migrateFromFormerIdentifierIfNeeded()
         isLoading = true
         defer { isLoading = false }
         if let raw = defaults.string(forKey: "language"), let l = AppLanguage(rawValue: raw) {
